@@ -72,7 +72,7 @@ while cap_side.isOpened():
             filepath = os.path.join(save_directory, filename)
             cv2.imwrite(filepath, cartoon_image)
 
-    cv2.imshow('Side Camera', image_side)
+    # cv2.imshow('Side Camera', image_side)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
