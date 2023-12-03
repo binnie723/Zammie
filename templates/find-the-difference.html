@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+            <title>다른 부분 찾기</title>
+            <script src="/static/js/transition.js"></script>
+            <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+                <style>
+                    @font-face {
+                        font-family: 'Orbit';
+                        src: url('/static/fonts/Orbit-Regular.ttf') format('truetype');
+                    }
+                    body {
+                        background-color: #ECE6CC;
+                        margin: 0;
+                        padding: 0;
+                        font-family: 'Orbit', sans-serif;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100vh;
+                    }
+                    .content {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        text-align: center;
+                    }
+                    h1 {
+                        margin: 0.5em 0;
+                    }
+                    .game-image {
+                        margin-top: 20px;
+                        width: 850px;
+                    }
+                    .typing-text {
+                        z-index: 1; /* 이미지 위에 표시 */
+                        overflow: hidden; /* 텍스트 숨김 처리 */
+                        white-space: nowrap; /* 줄 바꿈 금지 */
+                        margin: 0 auto; /* 가운데 정렬 */
+                        margin-top: 5px;
+                        margin-bottom: 5px; /* 가운데 정렬 */
+                        letter-spacing: 0.5px; /* 글자 간격 */
+                    }
+                    .start-button {
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        background-color: #b58a55; /* 버튼 배경색 */
+                        color: white; /* 글씨색 */
+                        border: none; /* 테두리 제거 */
+                        border-radius: 20px; /* 모서리 둥글게 */
+                        font-family: 'Orbit', sans-serif; /* 글씨체 */
+                        margin-top: 5px; /* Add some space above the button */
+                        transition: background-color 0.3s ease; /* 배경색 전환 애니메이션 */
+                    }
+                    .start-button:hover {
+                        background-color: #d4a56c; /* 커서를 가져다 대면 배경색 변경 */
+                    }
+                    .start-button.disabled-button {
+                        background-color: #968d81 !important; /* 비활성화된 버튼 배경색 */
+                        cursor: not-allowed !important;
+                    }
+                    .home-button {
+                        position: absolute;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        color: white; /* 글씨색 */
+                        background-color: #b58a55;
+                        border: none; /* 테두리 제거 */
+                        border-radius: 20px; /* 모서리 둥글게 */
+                        font-family: 'Orbit', sans-serif; /* 글씨체 */
+                        top: 35px; /* 위에서 10px 위치 */
+                        right: 40px; /* 오른쪽에서 10px 위치 */
+                    }
+                    .home-button:hover {
+                        background-color: #d4a56c; /* 커서를 가져다 대면 배경색 변경 */
+                    }
+                    .hint-button {
+                        position: absolute;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        color: white; /* 글씨색 */
+                        background-color: #b58a55;
+                        border: none; /* 테두리 제거 */
+                        border-radius: 20px; /* 모서리 둥글게 */
+                        font-family: 'Orbit', sans-serif; /* 글씨체 */
+                        top: 35px; /* 위에서 10px 위치 */
+                        left: 40px; /* 왼쪽에서 10px 위치 */
+                    }
+                    .hint-button:hover {
+                        background-color: #d4a56c; /* 커서를 가져다 대면 배경색 변경 */
+                    }
+                    .hint-button.disabled-button {
+                        background-color: #968d81 !important; /* 힌트 버튼 비활성화된 배경색 */
+                        cursor: not-allowed !important;
+                    }
+                    .game-container {
+                        position: relative;
+                        cursor: pointer;
+                    }
+                    .checkmark {
+                        position: absolute;
+                        background: url('/static/images/checkmark.png') no-repeat;
+                        background-size: contain;
+                        width: 30px;
+                        height: 30px;
+                        z-index: 10;
+                    }
+                    .progress-bar {
+                        font-size: 20px;
+                    }
+                </style>
+                <script>
+                    // 체크 표시된 개수를 저장하는 변수
+                    var checkmarkCount = 0;
+                    // 찾아야 할 좌표 배열
+                    var specifiedCoordinates = [
+                                                { x: 772, y: 68, label: '달' },
+                                                { x: 674, y: 128, label: '원숭이 귀' },
+                                                { x: 439, y: 278, label: '텐트 왼쪽 아래' },
+                                                { x: 481, y: 82, label: '텐트 옆 별' },
+                                                { x: 683, y: 348, label: '옴팡이 치마 잎' },
+                                                { x: 816, y: 165, label: '빨간 깃털' },
+                                                { x: 628, y: 376, label: '나무 장작' }
+                                                ];
+                                                // 이모지 배열
+                                                var Emojis = ["", "😶 ", "🙂 ", "😀 ", "😃 ", "😄 ", "😁 ", "😆 "];
+                                                // 현재 이모지 인덱스
+                                                var currentIndex = 0;
+                                                // 찾지 않은 좌표 배열 (초기에는 모두 포함)
+                                                var notFoundCoordinates = specifiedCoordinates.slice();
+                                                // 힌트 버튼 클릭 여부
+                                                var hintClicked = false;
+                                                // 힌트 번호
+                                                var hintnum = 0;
+                                                
+                                                // 차이점 표시 함수
+                                                function markDifference(event) {
+                                                    if (checkmarkCount >= specifiedCoordinates.length) {
+                                                        return; // 모든 체크 표시가 이미 되었을 경우 함수 종료
+                                                    }
+                                                    
+                                                    // 클릭된 요소가 이미지인지 확인
+                                                    if (event.target.tagName !== 'IMG') {
+                                                        return; // 이미지가 아닌 경우 함수 종료
+                                                    }
+                                                    
+                                                    // 이미지 내의 클릭 위치 계산
+                                                    var imgRect = event.target.getBoundingClientRect();
+                                                    var x = event.clientX - imgRect.left;
+                                                    var y = event.clientY - imgRect.top;
+                                                    
+                                                    // 이미지 왼쪽 절반을 클릭한 경우
+                                                    if (x < imgRect.width / 2) {
+                                                        alert("오른쪽 옴팡이 그림에서 클릭해주세요");
+                                                        return; // 이미지의 왼쪽 절반을 클릭한 경우 함수 종료
+                                                    }
+                                                    
+                                                    // 지정된 좌표 주변의 사각형 범위 확인
+                                                    for (var i = 0; i < specifiedCoordinates.length; i++) {
+                                                        var coordinate = specifiedCoordinates[i];
+                                                        var xDiff = Math.abs(x - coordinate.x);
+                                                        var yDiff = Math.abs(y - coordinate.y);
+                                                        
+                                                        // 클릭한 위치가 좌표 주변의 범위 내에 있으면 체크 표시 추가
+                                                        if (xDiff <= 20 && yDiff <= 20) {
+                                                            var checkmark = document.createElement('div');
+                                                            checkmark.className = 'checkmark';
+                                                            checkmark.style.left = (coordinate.x - 15) + 'px'; // 조정된 위치
+                                                            checkmark.style.top = (coordinate.y) + 'px'; // 조정된 위치
+                                                            
+                                                            // 체크 마크를 게임 컨테이너에 추가
+                                                            var container = event.currentTarget;
+                                                            container.appendChild(checkmark);
+                                                            
+                                                            // 체크 표시 개수 증가
+                                                            checkmarkCount++;
+                                                            
+                                                            // 모든 체크 표시가 되면 버튼 활성화 및 색상 변경
+                                                            if (checkmarkCount === specifiedCoordinates.length) {
+                                                                var button = document.querySelector('.start-button');
+                                                                button.classList.remove('disabled-button');
+                                                            }
+                                                            
+                                                            // 게이지 바 업데이트
+                                                            var progressBar = document.querySelector('.progress-bar');
+                                                            var emojiIndex = Math.min(checkmarkCount, Emojis.length - 1); // 오버플로우 방지
+                                                            progressBar.textContent = Emojis.slice(0, emojiIndex + 1).join('') + '🫥 '.repeat(specifiedCoordinates.length - checkmarkCount);
+                                                            currentIndex = emojiIndex;
+                                                            
+                                                            // 해당 좌표를 찾은 것으로 표시하고 notFoundCoordinates에서 제거
+                                                            notFoundCoordinates = notFoundCoordinates.filter(function(coord) {
+                                                                return !(coord.x === coordinate.x && coord.y === coordinate.y);
+                                                            });
+                                                            
+                                                            break; // 체크 표시를 추가한 후 종료
+                                                        }
+                                                    }
+                                                    
+                                                    // 힌트 버튼 업데이트
+                                                    updateHintButtonState();
+                                                }
+                    
+                    // 페이지 전환 함수
+                    function transitionToPage(url) {
+                        // 버튼이 비활성화되어 있는 경우에만 페이지 전환
+                        var button = document.querySelector('.start-button');
+                        if (!button.classList.contains('disabled-button')) {
+                            document.body.classList.add('fade-out');
+                            setTimeout(function () {
+                                window.location.href = url;
+                            }, 1000); // 0.5초 후에 페이지 전환
+                        }
+                    }
+                    function typeText() {
+                        var text = "오른쪽 옴팡이 그림에서 다른 부분을 찾아 클릭하세요. (힌트 : 총 2번 사용 가능)";
+                        var typingText = document.getElementById('typing-text');
+                        var charIndex = typingText.innerHTML.length;
+                        
+                        if (charIndex < text.length) {
+                            typingText.innerHTML += text.charAt(charIndex);
+                            setTimeout(typeText, 50);
+                        }
+                    }
+                    
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // ... (이전 코드) ...
+                        // 페이지 로딩 후 타이핑 효과 시작
+                        setTimeout(typeText, 1000); // 1초 후에 타이핑 효과 시작
+                    });
+                    
+                    // 화면 크기 조정 시 모든 체크 표시 초기화
+                    function clearCheckmarks() {
+                        var checkmarks = document.querySelectorAll('.checkmark');
+                        checkmarks.forEach(function (checkmark) {
+                            checkmark.remove(); // 각 체크 표시 제거
+                        });
+                        checkmarkCount = 0; // 체크 표시 개수 초기화
+                        var button = document.querySelector('.start-button');
+                        button.classList.add('disabled-button'); // 버튼 비활성화
+                        // 게이지 바 초기화
+                        var progressBar = document.querySelector('.progress-bar');
+                        progressBar.textContent = '🫥 🫥 🫥 🫥 🫥 🫥 🫥';
+                    }
+                    
+                    // 화면 크기 조정 이벤트 리스너 추가
+                    window.addEventListener('resize', clearCheckmarks);
+                    
+                    // 힌트 표시 함수
+                    function showHint() {
+                        if (!hintClicked) {
+                            if (hintnum == 1) {
+                                alert("마지막 힌트: " + notFoundCoordinates[0].label);
+                                hintClicked = true;
+                                var hintButton = document.querySelector('.hint-button');
+                                hintButton.textContent = "힌트 끝";
+                                hintnum++;
+                                hintButton.classList.add('disabled-button'); // 힌트 마지막 버튼 비활성화
+                                
+                            } else if (hintnum == 0) {
+                                var randomIndex = Math.floor(Math.random() * notFoundCoordinates.length);
+                                var hintText = "첫번째 힌트: " + notFoundCoordinates[randomIndex].label +"\n\n(* 힌트 한 개 남았습니다.)";
+                                if (checkmarkCount === specifiedCoordinates.length) {
+                                    alert("다 찾았습니다!");
+                                }
+                                else{
+                                    alert(hintText);
+                                }
+                                hintnum ++;
+                            } else {
+                                alert("더 이상 힌트를 볼 수 없습니다.");
+                            }
+                        }
+                    }
+                    
+                    // 홈으로 이동 함수
+                    function goHome() {
+                        window.location.href = "/"; // 홈페이지 주소로 이동
+                    }
+                    
+                    // 힌트 버튼 상태 업데이트 함수
+                    function updateHintButtonState() {
+                        var hintButton = document.querySelector('.hint-button');
+                        if (checkmarkCount === specifiedCoordinates.length || hintClicked) {
+                            hintButton.classList.add('disabled-button'); // 힌트 버튼 비활성화
+                        } else {
+                            hintButton.classList.remove('disabled-button'); // 힌트 버튼 활성화
+                        }
+                    }
+                    
+                </script>
+            </head>
+    <body>
+        <div class="content">
+            <h1>옴팡지게 즐거운 틀린 그림 찾기</h1>
+            <p id="typing-text" class="typing-text"></p>
+            <div class="game-container" onclick="markDifference(event)">
+                <img src="/static/images/difference.png" alt="Find the Difference Game" class="game-image">
+            </div>
+            <p class="progress-bar">🫥 🫥 🫥 🫥 🫥 🫥 🫥</p>
+            <button onclick="transitionToPage('/webcam')" class="start-button disabled-button">Next</button>
+            <button class="home-button" onclick="goHome()">홈으로</button>
+            <button class="hint-button" onclick="showHint()">힌트 보기</button>
+        </div>
+    </body>
+</html>
+

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Start Page</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <style>
+        @font-face {
+            font-family: 'Orbit';
+            src: url('/static/fonts/Orbit-Regular.ttf') format('truetype');
+        }
+        body, html {
+            background-color: #ECE6CC;
+            margin: 0;
+            padding: 0;
+            font-family: 'Orbit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Full viewport height */
+            overflow: hidden; /* 가로 스크롤을 숨김 */
+        }
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-align: center; /* Ensure text is centered within the content div */
+        }
+        .start-button-container {
+            display: flex;
+            align-items: center;
+            position: relative; /* 상대 위치 설정 */
+        }
+        .start-button {
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #b58a55; /* 버튼 배경색 */
+            color: white; /* 버튼 글씨색은 흰색으로 설정 */
+            border: none; /* 테두리 제거 */
+            border-radius: 20px; /* 모서리 둥글게 */
+            font-family: 'Orbit', sans-serif; /* 글씨체 */
+            transition: background-color 0.3s ease; /* 배경색 전환 애니메이션 */
+            text-decoration: none; /* 링크의 밑줄 제거 */
+        }
+        .start-button:hover {
+            background-color: #d4a56c; /* 커서를 가져다 대면 배경색 변경 */
+        }
+        .logo-image {
+            width: 300px; /* 이미지 크기 조절 */
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 이 부분이 중요합니다 */
+        }
+        .animated-text {
+            position: relative;
+            display: inline-block;
+            background-image: linear-gradient(to right, transparent, black); /* 검정색 그라데이션 배경 설정 */
+            background-clip: text; /* 텍스트에 배경 적용 */
+            -webkit-background-clip: text; /* 웹킷 브라우저 지원 */
+            color: transparent; /* 글자색을 투명으로 설정 */
+            animation: slideText 5s linear infinite; /* slideText 애니메이션 적용 */
+        }
+        .start-button-text {
+            color: white; /* "Start 버튼" 글자색을 회색으로 설정 */
+        }
+        @keyframes slideText {
+            0% {
+                background-position: -100%;
+                color: black;
+            }
+            25% {
+                color: rgb(64, 64, 64);
+            }
+            50% {
+                background-position: 100%;
+                color: rgb(191, 191, 191);
+            }
+            75% {
+                color: rgb(64, 64, 64);
+            }
+            100% {
+                background-position: 200%;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>프로젝트에 참여해주셔서 감사합니다</h1>
+        <img src="/static/images/goodbye.gif" alt="Zammie Logo" class="logo-image">
+        <p>남은 하루도 <span class="animated-text">옴팡지게</span> 즐거운 시간 보내세요! </p>
+        <div class="start-button-container">
+            <a href="/" class="start-button"><span class="start-button-text">홈으로</span></a>
+        </div>
+    </div>
+</body>
+</html>
+

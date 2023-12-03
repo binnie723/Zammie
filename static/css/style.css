@@ -1,0 +1,19 @@
+/* style.css 파일 내용 */
+@keyframes popIn {
+    0% {
+        transform: translateY(20px) scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(-10px) scale(1.1);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+.checkmark {
+    /* ... 기존의 .checkmark 스타일 ... */
+    animation: popIn 0.5s ease-out forwards; /* 애니메이션 적용 */
+}
+

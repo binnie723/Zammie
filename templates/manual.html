@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Speaker Manual</title>
+    <style>
+        @font-face {
+            font-family: 'Orbit';
+            src: url('/static/fonts/Orbit-Regular.ttf') format('truetype');
+        }
+        body {
+            background-color: #ECE6CC;
+            margin: 0;
+            padding: 0;
+            font-family: 'Orbit', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Full viewport height */
+        }
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-align: center; /* Ensure text is centered within the content div */
+        }
+        h1 {
+            margin: 0.5em 0;
+        }
+        .webcam-image {
+            width: 350px; /* Adjust width as necessary */
+            height: auto; /* Maintain aspect ratio */
+            margin-top: 30px; /* Adjust margin as necessary */
+            margin-bottom: 30px;
+        }
+        .start-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #b58a55; /* 초기 버튼 배경색 */
+            color: white; /* 초기 글씨색 */
+            border: none; /* 테두리 제거 */
+            border-radius: 20px; /* 모서리 둥글게 */
+            font-family: 'Orbit', sans-serif; /* 글씨체 */
+            margin-top: 30px; /* Add some space above the button */
+            transition: background-color 0.3s ease; /* 배경색 전환 애니메이션 */
+        }
+        .start-button:hover {
+            background-color: #d4a56c; /* 커서를 가져다 대면 배경색 변경 */
+        }
+        .start-button.disabled {
+            background-color: #968d81; /* 비활성화된 버튼 배경색 */
+            cursor: not-allowed; /* 비활성화된 상태에서는 커서 모양 변경 */
+        }
+        .home-button {
+            position: absolute;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            color: white; /* 글씨색 */
+            background-color: #b58a55;
+            border: none; /* 테두리 제거 */
+            border-radius: 20px; /* 모서리 둥글게 */
+            font-family: 'Orbit', sans-serif; /* 글씨체 */
+            top: 50px; /* 위에서 10px 위치 */
+            right: 50px; /* 오른쪽에서 10px 위치 */
+        }
+        .home-button:hover {
+            background-color: #d4a56c; /* 커서를 가져다 대면 배경색 변경 */
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var paragraphs = [
+                "옆에 배치된 스피커를 통해 간단한 상담을 받으실 수 있습니다.",
+                "아래 적혀진 메뉴얼을 따라 대화를 시도해 보세요. 💁🏻‍♀️"
+            ];
+            var currentParagraph = 0;
+            var typingSpeed = 50; // 타이핑 속도 (밀리초 단위)
+
+            var nextButton = document.getElementById('nextButton');
+            nextButton.disabled = true; // 처음에는 Next 버튼 비활성화
+            nextButton.classList.add('disabled'); // 초기에 비활성화된 상태에 대한 CSS 클래스 추가
+
+            function typeWriter() {
+                if (currentParagraph >= paragraphs.length) {
+                    nextButton.disabled = false; // 모든 문단 타이핑 후 Next 버튼 활성화
+                    nextButton.classList.remove('disabled'); // 활성화된 상태에 대한 CSS 클래스 제거
+                    return;
+                }
+
+                var text = paragraphs[currentParagraph];
+                var typingText = document.getElementById('typing-text' + currentParagraph);
+                var charIndex = typingText.innerHTML.length;
+
+                if (charIndex < text.length) {
+                    typingText.innerHTML += text.charAt(charIndex);
+                    setTimeout(typeWriter, typingSpeed);
+                } else {
+                    currentParagraph++; // 다음 문단으로 이동
+                    setTimeout(typeWriter, typingSpeed * 10); // 다음 문단으로 넘어가기 전에 약간의 딜레이
+                }
+            }
+
+            typeWriter();
+        });
+        function goHome() {
+            window.location.href = "/"; // 홈페이지 주소로 이동
+        }
+    </script>
+</head>
+<body>
+    <div class="content">
+        <h1>상담 스피커 메뉴얼</h1>
+        <p id="typing-text0"></p>
+        <p id="typing-text1"></p>
+ 
+        <button id="nextButton" onclick="window.location.href='/thankyou'" class="start-button">상담 마치기</button>
+        <button class="home-button" onclick="goHome()">홈으로</button>
+    </div>
+</body>
+</html>
+
