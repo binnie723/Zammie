@@ -89,7 +89,7 @@
             var paragraphs = [
                 "열심히 집중하고 계시는 동안 거북목 현상이 감지되었습니다.",
                 "혹시 일상에서도 공부에 열중하느라 자세를 놓치는 경우가 많지 않으신가요?",
-                "올바른 자세에 관해 상담 받기를 원하신다면 아래 버튼을 눌러주세요."
+                "당신의 자세를 확인하고 상담 받기를 원하신다면 아래 버튼을 눌러주세요."
             ];
             var currentParagraph = 0;
             var typingSpeed = 50; // 타이핑 속도 (밀리초 단위)
@@ -134,14 +134,12 @@
 </head>
 <body>
     <div class="content">
-        <h2>문제를 푸는 당신의 모습을 확인해보세요</h2>
-        <button class="show-button" onclick="showImage()">See the Image</button>
-        <img id="webcamImage" class="webcam-image" src="/static/images/image.jpg" alt="Webcam Image">
+        <h2>문제를 푸는 당신의 모습에서</h2>
         <p id="typing-text0"></p>
         <p id="typing-text1"></p>
         <p id="typing-text2"></p>
         <p></p>
-        <button class="show-button consult-button" onclick="window.location.href='/manual'">상담 받으러 가기 ></button>
+        <button class="show-button consult-button" onclick="window.location.href='/manual'">확인하러 가기 ></button>
         <button class="home-button" onclick="goHome()">홈으로</button>
     </div>
 </body>
