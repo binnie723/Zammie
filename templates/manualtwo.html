@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Speaker Manual</title>
+    <title>Manual Two</title>
     <style>
         @font-face {
             font-family: 'Orbit';
@@ -36,7 +36,7 @@
             margin-top: 30px; /* Adjust margin as necessary */
             margin-bottom: 30px;
         }
-        .start-button, .option-button, .home-button {
+        .start-button, .back-button, .home-button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
@@ -48,10 +48,10 @@
             margin: 10px; /* 양옆으로 10px 간격 추가 */
             transition: background-color 0.3s ease; /* 배경색 전환 애니메이션 */
         }
-        .start-button:hover, .option-button:hover, .home-button:hover {
+        .start-button:hover, .back-button:hover, .home-button:hover {
             background-color: #d4a56c; /* 커서를 가져다 대면 배경색 변경 */
         }
-        .start-button.disabled, .option-button.disabled, .home-button.disabled {
+        .start-button.disabled, .back-button.disabled, .home-button.disabled {
             background-color: #968d81 !important; /* 비활성화된 버튼 배경색 */
             cursor: not-allowed; /* 비활성화된 상태에서는 커서 모양 변경 */
         }
@@ -73,16 +73,24 @@
             top: 50px; /* 위에서 10px 위치 */
             right: 50px; /* 오른쪽에서 10px 위치 */
         }
+
+        /* YouTube 동영상 스타일 수정 */
+        iframe {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var paragraphs = [
-                "아래 적혀진 2가지의 선택지 중 하나를 선택해주세요. 💁🏻‍♀️",
-                "1. 현재 나의 자세에 대한 설명",
-                "2. 앉아서 하는 자세 스트레칭 방법"
+                "다음 영상을 참고해서 실생활 자세를 개선시켜 보세요. 💁🏻‍♀️"
             ];
             var currentParagraph = 0;
             var typingSpeed = 50; // 타이핑 속도 (밀리초 단위)
+
+            var backButton = document.getElementById('backButton');
+            backButton.disabled = true; // 처음에는 Back 버튼 비활성화
+            backButton.classList.add('disabled'); // 초기에 비활성화된 상태에 대한 CSS 클래스 추가
 
             var nextButton = document.getElementById('nextButton');
             nextButton.disabled = true; // 처음에는 Next 버튼 비활성화
@@ -90,6 +98,8 @@
 
             function typeWriter() {
                 if (currentParagraph >= paragraphs.length) {
+                    backButton.disabled = false; // 모든 문단 타이핑 후 Back 버튼 활성화
+                    backButton.classList.remove('disabled'); // 활성화된 상태에 대한 CSS 클래스 제거
                     nextButton.disabled = false; // 모든 문단 타이핑 후 Next 버튼 활성화
                     nextButton.classList.remove('disabled'); // 활성화된 상태에 대한 CSS 클래스 제거
                     return;
@@ -105,14 +115,6 @@
                 } else {
                     currentParagraph++; // 다음 문단으로 이동
                     setTimeout(typeWriter, typingSpeed * 10); // 다음 문단으로 넘어가기 전에 약간의 딜레이
-                    if (currentParagraph == 3) {
-                        // 마지막 문단 타이핑이 완료되면 "1번 보러가기"와 "2번 보러가기" 버튼 활성화
-                        var optionButtons = document.getElementsByClassName('option-button');
-                        for (var i = 0; i < optionButtons.length; i++) {
-                            optionButtons[i].disabled = false;
-                            optionButtons[i].classList.remove('disabled');
-                        }
-                    }
                 }
             }
 
@@ -126,14 +128,12 @@
 </head>
 <body>
     <div class="content">
-        <h1>상담 메뉴얼</h1>
+        <h1>메뉴얼 2 : 앉아서 하는 거북목 스트레칭 방법</h1>
         <p id="typing-text0"></p>
-        <p id="typing-text1"></p>
-        <p id="typing-text2"></p>
- 
+        <!-- YouTube 동영상을 추가합니다. -->
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/3vvDOenCrCo" frameborder="0" allowfullscreen></iframe>
         <div class="button-container">
-            <button class="option-button disabled" onclick="window.location.href='/manualone'">1번 보러가기</button>
-            <button class="option-button disabled" onclick="window.location.href='/manualtwo'">2번 보러가기</button>
+            <button id="backButton" onclick="window.location.href='/manual'"class="back-button">돌아가기</button>
             <button id="nextButton" onclick="window.location.href='/thankyou'" class="start-button">상담 마치기</button>
         </div>
         

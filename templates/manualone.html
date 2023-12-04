@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Speaker Manual</title>
+    <title>Manual One</title>
     <style>
         @font-face {
             font-family: 'Orbit';
@@ -31,12 +31,13 @@
             margin: 0.5em 0;
         }
         .webcam-image {
-            width: 350px; /* Adjust width as necessary */
-            height: auto; /* Maintain aspect ratio */
-            margin-top: 30px; /* Adjust margin as necessary */
+            width: 350px;
+            height: auto;
+            margin-top: 30px;
             margin-bottom: 30px;
+            display: none; /* 이미지를 처음에는 숨깁니다 */
         }
-        .start-button, .option-button, .home-button {
+        .start-button, .back-button, .home-button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
@@ -48,10 +49,25 @@
             margin: 10px; /* 양옆으로 10px 간격 추가 */
             transition: background-color 0.3s ease; /* 배경색 전환 애니메이션 */
         }
-        .start-button:hover, .option-button:hover, .home-button:hover {
+        .show-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #b58a55; /* 버튼 배경색 */
+            color: white; /* 글씨색 */
+            border: none; /* 테두리 제거 */
+            border-radius: 20px; /* 모서리 둥글게 */
+            font-family: 'Orbit', sans-serif; /* 글씨체 */
+            margin-top: 30px; /* Add some space above the button */
+            margin-bottom: 30px;
+        }
+        .show-button:hover {
             background-color: #d4a56c; /* 커서를 가져다 대면 배경색 변경 */
         }
-        .start-button.disabled, .option-button.disabled, .home-button.disabled {
+        .start-button:hover, .back-button:hover, .home-button:hover {
+            background-color: #d4a56c; /* 커서를 가져다 대면 배경색 변경 */
+        }
+        .start-button.disabled, .back-button.disabled, .home-button.disabled {
             background-color: #968d81 !important; /* 비활성화된 버튼 배경색 */
             cursor: not-allowed; /* 비활성화된 상태에서는 커서 모양 변경 */
         }
@@ -73,16 +89,26 @@
             top: 50px; /* 위에서 10px 위치 */
             right: 50px; /* 오른쪽에서 10px 위치 */
         }
+        /* 비활성화된 버튼 스타일 */
+        .consult-button.disabled {
+            background-color: gray; /* 비활성화되면 회색 배경색 적용 */
+            cursor: not-allowed; /* 클릭 비활성화된 상태에서 포인터 변경 */
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var paragraphs = [
-                "아래 적혀진 2가지의 선택지 중 하나를 선택해주세요. 💁🏻‍♀️",
-                "1. 현재 나의 자세에 대한 설명",
-                "2. 앉아서 하는 자세 스트레칭 방법"
+                              "다음은 당신의 자세에 대한 분석 내용입니다. 💁🏻‍♀️",
+                              "귀의 중간 부위에서 아래쪽으로 가상의 수직선을 그은 후",
+                              "가상의 선이 어깨 중간의 같은 수직선상에 있어야 정상입니다."
+                              
             ];
             var currentParagraph = 0;
             var typingSpeed = 50; // 타이핑 속도 (밀리초 단위)
+
+            var backButton = document.getElementById('backButton');
+            backButton.disabled = true; // 처음에는 Back 버튼 비활성화
+            backButton.classList.add('disabled'); // 초기에 비활성화된 상태에 대한 CSS 클래스 추가
 
             var nextButton = document.getElementById('nextButton');
             nextButton.disabled = true; // 처음에는 Next 버튼 비활성화
@@ -90,6 +116,8 @@
 
             function typeWriter() {
                 if (currentParagraph >= paragraphs.length) {
+                    backButton.disabled = false; // 모든 문단 타이핑 후 Back 버튼 활성화
+                    backButton.classList.remove('disabled'); // 활성화된 상태에 대한 CSS 클래스 제거
                     nextButton.disabled = false; // 모든 문단 타이핑 후 Next 버튼 활성화
                     nextButton.classList.remove('disabled'); // 활성화된 상태에 대한 CSS 클래스 제거
                     return;
@@ -105,14 +133,6 @@
                 } else {
                     currentParagraph++; // 다음 문단으로 이동
                     setTimeout(typeWriter, typingSpeed * 10); // 다음 문단으로 넘어가기 전에 약간의 딜레이
-                    if (currentParagraph == 3) {
-                        // 마지막 문단 타이핑이 완료되면 "1번 보러가기"와 "2번 보러가기" 버튼 활성화
-                        var optionButtons = document.getElementsByClassName('option-button');
-                        for (var i = 0; i < optionButtons.length; i++) {
-                            optionButtons[i].disabled = false;
-                            optionButtons[i].classList.remove('disabled');
-                        }
-                    }
                 }
             }
 
@@ -122,18 +142,24 @@
         function goHome() {
             window.location.href = "/"; // 홈페이지 주소로 이동
         }
+        function showImage() {
+            document.getElementById('webcamImage').style.display = 'block'; // 이미지를 표시합니다
+            document.querySelector('.show-button').style.display = 'none'; // 버튼을 숨깁니다
+            typingInterval = setInterval(typeText, 50); // 타이핑 효과 시작
+        }
     </script>
 </head>
 <body>
     <div class="content">
-        <h1>상담 메뉴얼</h1>
+        <h1>메뉴얼 1 : 나의 자세에 대한 설명</h1>
+        <button class="show-button" onclick="showImage()">See the Image</button>
+        <img id="webcamImage" class="webcam-image" src="/static/images/image.jpg" alt="Webcam Image">
         <p id="typing-text0"></p>
         <p id="typing-text1"></p>
         <p id="typing-text2"></p>
  
         <div class="button-container">
-            <button class="option-button disabled" onclick="window.location.href='/manualone'">1번 보러가기</button>
-            <button class="option-button disabled" onclick="window.location.href='/manualtwo'">2번 보러가기</button>
+            <button id="backButton" onclick="window.location.href='/manual'"class="back-button">돌아가기</button>
             <button id="nextButton" onclick="window.location.href='/thankyou'" class="start-button">상담 마치기</button>
         </div>
         

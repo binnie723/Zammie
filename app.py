@@ -21,6 +21,14 @@ def webcam():
 @app.route('/manual')
 def manual():
     return render_template('manual.html')
+
+@app.route('/manualone')
+def manualone():
+    return render_template('manualone.html')
+
+@app.route('/manualtwo')
+def manualtwo():
+    return render_template('manualtwo.html')
     
 @app.route('/thankyou')
 def thankyou():
